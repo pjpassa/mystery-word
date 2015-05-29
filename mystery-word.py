@@ -32,8 +32,14 @@ def pick_word():
 
 
 # Display current state.
-def display_state(word, guessed):
-    pass
+def display_text(word, guessed):
+    string = ""
+    for index, bool in enumerate(guessed):
+        if bool:
+            string += word[index]
+        else:
+            string += "_"
+    return string
 
 # Handle input from user.
 
@@ -44,5 +50,5 @@ def display_state(word, guessed):
 
 # Tests
 assert_exists(pick_word())
-assert_equals(display_state('banana', [True, False, True, False, True, False]),
+assert_equals(display_text('banana', [True, False, True, False, True, False]),
               'b_n_n_')
