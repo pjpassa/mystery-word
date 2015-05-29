@@ -54,7 +54,18 @@ def handle_input():
         else:
             return character
 
+
 # End conditions check.
+def win_or_lose(guessed, lives):
+    if lives == 0:
+        return False
+    victory = True
+    for bool in guessed:
+        victory = victory and bool
+    if victory:
+        return True
+    return None
+
 
 # Display result.
 
@@ -64,3 +75,6 @@ assert_exists(pick_word())
 assert_equals(display_text('banana', [True, False, True, False, True, False]),
               'b_n_n_')
 assert_equals(len(handle_input()), 1)
+assert_equals(win_or_lose([False, True, True], 0), False)
+assert_equals(win_or_lose([True, True, True], 3), True)
+assert_equals(win_or_lose([False, True, True], 3), None)
