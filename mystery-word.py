@@ -44,7 +44,15 @@ def display_text(word, guessed):
 
 # Handle input from user.
 def handle_input():
-    pass
+    character = ''
+    while True:
+        character = input("Guess a letter or enter 'quit' to quit. > ").lower()
+        if character == "quit":
+            exit()
+        elif len(character) != 1 or not character.isalpha():
+            print("Please enter only 1 letter.")
+        else:
+            return character
 
 # End conditions check.
 
