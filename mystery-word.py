@@ -41,7 +41,10 @@ def display_text(word, guessed):
             string += "_"
     return string
 
+
 # Handle input from user.
+def handle_input():
+    pass
 
 # End conditions check.
 
@@ -52,3 +55,4 @@ def display_text(word, guessed):
 assert_exists(pick_word())
 assert_equals(display_text('banana', [True, False, True, False, True, False]),
               'b_n_n_')
+assert_equals(len(handle_input()), 1)
