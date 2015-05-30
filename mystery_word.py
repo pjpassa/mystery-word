@@ -1,4 +1,5 @@
 import random
+import os
 
 # Functions
 
@@ -69,6 +70,7 @@ def handle_input(letters):
         elif character in letters:
             print("You have already chosen '{}'.".format(character))
         else:
+            os.system("clear")
             return character
 
 
@@ -119,12 +121,13 @@ def game(lives=8):
     letters = ""
     print("Try to guess the mystery word!")
     print("The word is {} letters long.".format(len(word)))
+    input("Press Enter to cotinue.")
+    os.system("clear")
     while True:
         print("\nThe current word is...\n")
         print(display_text(word, guessed))
         print("\nYou have {} lives left.".format(lives))
         letter = handle_input(letters)
-        print("\n"*3)
         letters += letter + " "
         matched_indexes = guess_checker(word, letter)
         if matched_indexes:
