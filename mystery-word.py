@@ -24,8 +24,26 @@ def assert_exists(variable):
         print(".")
 
 
+# Returns game difficulty.
+def get_difficulty():
+    print("What difficulty do you want to play?")
+    difficulty_input = input("Enter 1 for easy, 2 for normal, or 3 for hard.")
+    try:
+        difficulty = int(difficulty_input)
+    except ValueError:
+        print("Please enter 1, 2, or 3.")
+        return None
+    if difficulty not in range(1, 4):
+        print("Please enter 1, 2, or 3.")
+        return None
+    return difficulty
+
+
 # Picks a random word.
-def pick_word(difficulty):
+def pick_word():
+    difficulty = None
+    while not difficulty:
+        difficulty = get_difficulty()
     with open("/usr/share/dict/words") as f:
         word_list = f.readlines()
     word_length = range(0)
@@ -116,7 +134,7 @@ def game(word, lives):
 
 # Tests
 """
-assert_exists(pick_word(2))
+assert_exists(pick_word())
 assert_equals(display_text('banana', [True, False, True, False, True, False]),
               'b _ n _ n _ ')
 assert_equals(len(handle_input("")), 1)
