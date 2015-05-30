@@ -26,36 +26,41 @@ def assert_exists(variable):
 
 # Returns game difficulty.
 def get_difficulty():
-    print("What difficulty do you want to play?")
-    difficulty_input = input("Enter 1 for easy, 2 for normal, or 3 for hard.")
-    try:
-        difficulty = int(difficulty_input)
-    except ValueError:
-        print("Please enter 1, 2, or 3.")
-        return None
-    if difficulty not in range(1, 4):
-        print("Please enter 1, 2, or 3.")
-        return None
-    return difficulty
-
-
-# Picks a random word.
-def pick_word():
     difficulty = None
-    while not difficulty:
-        difficulty = get_difficulty()
+    print("What difficulty do you want to play?")
+    while True:
+        input_text = "Enter 1 for easy, 2 for normal, or 3 for hard. > "
+        difficulty_input = input(input_text)
+        try:
+            difficulty = int(difficulty_input)
+        except ValueError:
+            print("Please enter 1, 2, or 3.")
+            continue
+        if difficulty not in range(1, 4):
+            print("Please enter 1, 2, or 3.")
+            continue
+        return difficulty
+
+
+# Retrives a random word from /usr/share/dict/words
+def retrieve_random_word():
     with open("/usr/share/dict/words") as f:
         word_list = f.readlines()
-    word_length = range(0)
+    return random.choice(word_list)[:-1]
+
+
+# Picks a random word given a difficulty.
+def pick_word(difficulty):
+    word = ""
     if difficulty == 1:
-        word_length = range(4, 7)
+        while len(word) not in range(4, 7):
+            word = retrieve_random_word()
     elif difficulty == 2:
-        word_length = range(6, 11)
+        while len(word) not in range(6, 11):
+            word = retrieve_random_word()
     else:
-        word_length = range(10, 100)
-    word = random.choice(word_list)[:-1]
-    while len(word) not in word_length:
-        word = random.choice(word_list)[:-1]
+        while len(word) < 10:
+            word = retrieve_random_word()
     return word
 
 
@@ -74,9 +79,11 @@ def display_text(word, guessed):
 def handle_input(letters):
     character = ''
     while True:
-        print("You have already guessed {}.".format(letters[:-1]))
+        if letters:
+            print("You have already guessed {}.".format(letters[:-1]))
         character = input("Guess a letter or enter 'quit' to quit. > ").lower()
         if character == "quit":
+            print("\nThanks for playing!\n")
             exit()
         elif len(character) != 1 or not character.isalpha():
             print("Please enter only 1 letter.")
@@ -84,6 +91,15 @@ def handle_input(letters):
             print("You have already chosen '{}'.".format(character))
         else:
             return character
+
+
+# Returns a list with the matched indexes.
+def guess_checker(word, letter):
+    matched = []
+    for index, character in enumerate(word):
+        if letter == character:
+            matched.append(index)
+    return matched
 
 
 # End conditions check.
@@ -105,36 +121,51 @@ def final_message(result):
     return "Sorry, you have lost."
 
 
+# Checks if the player wants to play again.
+def play_again():
+    while True:
+        response = input("Do you want to play again (y/n)? > ")
+        if response.lower() in ['y', 'yes']:
+            return True
+        elif response.lower() in ['n', 'no']:
+            return False
+        print("Please enter 'y' or 'n'.")
+
+
 # Game loop.
-def game(word, lives):
+def game(lives=8):
+    difficulty = get_difficulty()
+    word = pick_word(difficulty)
     guessed = [False for letter in word]
     letters = ""
     print("Try to guess the mystery word!")
     print("The word is {} letters long.".format(len(word)))
     while True:
-        print("You have {} lives left.".format(lives))
-        print("The current word is...")
+        print("\nThe current word is...\n")
         print(display_text(word, guessed))
+        print("\nYou have {} lives left.".format(lives))
         letter = handle_input(letters)
+        print("\n"*3)
         letters += letter + " "
-        correct = False
-        for index, character in enumerate(word):
-            if letter == character:
+        matched_indexes = guess_checker(word, letter)
+        if matched_indexes:
+            print("\nYes, {} is in the word!".format(letter))
+            for index in matched_indexes:
                 guessed[index] = True
-                correct = True
-        if not correct:
+        else:
+            print("\nSorry, {} is not in the word.".format(letter))
             lives -= 1
         result = win_or_lose(guessed, lives)
         if result is None:
             continue
         print(final_message(result))
-        print("The word was {}.".format(word))
+        print("\nThe word was {}.\n".format(word))
         break
-    return True
+    return play_again()
 
 # Tests
 """
-assert_exists(pick_word())
+assert_exists(pick_word(2))
 assert_equals(display_text('banana', [True, False, True, False, True, False]),
               'b _ n _ n _ ')
 assert_equals(len(handle_input("")), 1)
@@ -144,23 +175,9 @@ assert_equals(win_or_lose([False, True, True], 3), None)
 assert_equals(final_message(True), "Congratulations! You have won!")
 assert_equals(final_message(False), "Sorry, you have lost.")
 
-assert_equals(game(pick_word(), 8), True)
+# assert_equals(game(pick_word(2), 8), True)
 """
 
-while True:
-    print("What difficulty do you want to play?")
-    difficulty = input("Enter 1 for easy, 2 for normal, or 3 for hard.")
-    if not difficulty.isdigit():
-        print("I didn't understand that.")
-        continue
-    if int(difficulty) not in range(1, 4):
-        print("I didn't understand that.")
-        continue
-    game(pick_word(int(difficulty)), 8)
-    while True:
-        response = input("Do you want to play again (y/n)? ")
-        if response[0].lower() == 'y':
-            break
-        elif response[0].lower() == 'n':
-            exit()
-        print("I didn't understand that.")
+while game():
+    continue
+print("\nThanks for playing!\n")
