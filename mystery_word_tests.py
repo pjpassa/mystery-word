@@ -1,4 +1,4 @@
-from mystery_word.py import game
+import mystery_word
 
 
 # Tests
@@ -24,14 +24,14 @@ def assert_exists(variable):
 
 
 # Tests
-assert_exists(pick_word(2))
-assert_equals(display_text('banana', [True, False, True, False, True, False]),
+assert_exists(mystery_word.pick_word(2))
+assert_equals(mystery_word.display_text('banana', [True, False, True,
+                                                   False, True, False]),
               'b _ n _ n _ ')
-assert_equals(len(handle_input("")), 1)
-assert_equals(win_or_lose([False, True, True], 0), False)
-assert_equals(win_or_lose([True, True, True], 3), True)
-assert_equals(win_or_lose([False, True, True], 3), None)
-assert_equals(final_message(True), "Congratulations! You have won!")
-assert_equals(final_message(False), "Sorry, you have lost.")
-
-# assert_equals(game(pick_word(2), 8), True)
+assert_equals(len(mystery_word.handle_input("")), 1)
+assert_equals(mystery_word.win_or_lose([False, True, True], 0), False)
+assert_equals(mystery_word.win_or_lose([True, True, True], 3), True)
+assert_equals(mystery_word.win_or_lose([False, True, True], 3), None)
+assert_equals(mystery_word.final_message(True),
+              "Congratulations! You have won!")
+assert_equals(mystery_word.final_message(False), "Sorry, you have lost.")
