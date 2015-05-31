@@ -87,10 +87,7 @@ def guess_checker(word, letter):
 def win_or_lose(guessed, lives):
     if lives == 0:
         return False
-    victory = True
-    for bool in guessed:
-        victory = victory and bool
-    if victory:
+    if False not in guessed:
         return True
     return None
 
@@ -147,7 +144,7 @@ def game(lives=8):
 
 
 # Main program
-
-while game():
-    continue
-print("\nThanks for playing!\n")
+if __name__ == "__main__":
+    while game():
+        continue
+    print("\nThanks for playing!\n")

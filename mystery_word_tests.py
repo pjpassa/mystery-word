@@ -1,4 +1,5 @@
-import mystery_word
+from mystery_word import pick_word, display_text, handle_input, win_or_lose, /
+final_message
 
 
 # Tests
