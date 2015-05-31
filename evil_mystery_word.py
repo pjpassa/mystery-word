@@ -1,5 +1,5 @@
 from mystery_word import display_text, handle_input, get_difficulty, \
-    play_again, guess_checker
+    play_again, guess_checker, win_or_lose, final_message
 from collections import defaultdict
 import random
 import os
@@ -10,9 +10,9 @@ import os
 # Get word length.
 def get_word_length(difficulty):
     if difficulty == 1:
-        return random.randint(4, 7)
+        return random.randint(4, 6)
     elif difficulty == 2:
-        return random.randint(6, 11)
+        return random.randint(6, 10)
     return random.randint(10, 15)
 
 
@@ -36,9 +36,9 @@ def letter_location_histogram(word_list, match_letter):
 
 # Takes a dictionary and returns a list of tuples of the top number of words.
 def top_items(dictionary, number):
-    pair_list = [pair for pair in word_dictionary.items()]
+    pair_list = [pair for pair in dictionary.items()]
     pair_list.sort(key=lambda pair: -pair[1])
-    return word_list[:number]
+    return pair_list[:number]
 
 
 # Refine new list with guess
@@ -54,12 +54,14 @@ def refine_list(word_list, letter):
 
 
 # Correct list
-def correct_list(word_list, current_word, guessed):
+def correct_list(word_list, current_word, guessed, letters):
     new_list = []
     for word in word_list:
+        keep = True
         for index, letter in enumerate(word):
-            keep = True
-            if guessed[index] and letter != word[index]:
+            if guessed[index] and letter != current_word[index]:
+                keep = False
+            elif not guessed[index] and letter in letters:
                 keep = False
         if keep:
             new_list.append(word)
@@ -86,7 +88,6 @@ def game(lives=8):
         word_list = refine_list(word_list, letter)
         word = random.choice(word_list)
         matched_indexes = guess_checker(word, letter)
-        word_list = refine_list(word_list, word, letter)
         if matched_indexes:
             print("\nYes, {} is in the word!".format(letter))
             for index in matched_indexes:
@@ -94,6 +95,7 @@ def game(lives=8):
         else:
             print("\nSorry, {} is not in the word.".format(letter))
             lives -= 1
+        word_list = correct_list(word_list, word, guessed, letters)
         result = win_or_lose(guessed, lives)
         if result is None:
             continue
