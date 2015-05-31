@@ -59,8 +59,7 @@ def display_text(word, guessed):
 def handle_input(letters):
     character = ''
     while True:
-        if letters:
-            print("You have already guessed {}.".format(letters[:-1]))
+        print("Letters guessed so far: {}".format(letters[:-1]))
         character = input("Guess a letter or enter 'quit' to quit. > ").lower()
         if character == "quit":
             print("\nThanks for playing!\n")
@@ -123,7 +122,7 @@ def game(lives=8):
     while True:
         print("\nThe current word is...\n")
         print(display_text(word, guessed))
-        print("\nYou have {} lives left.".format(lives))
+        print("\nLives left: {}".format(lives))
         letter = handle_input(letters)
         letters += letter + " "
         matched_indexes = guess_checker(word, letter)
