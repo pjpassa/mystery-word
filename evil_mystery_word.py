@@ -1,7 +1,8 @@
-from mystery_word as mw import display_text, handle_input, get_difficulty, \
+from mystery_word import display_text, handle_input, get_difficulty, \
     play_again, guess_checker
 from collections import defaultdict
 import random
+import os
 
 
 # Functions
@@ -67,8 +68,8 @@ def correct_list(word_list, current_word, guessed):
 
 # The game!
 def game(lives=8):
-    difficulty = mw.get_difficulty()
-    word_list = get_init_list(mw.get_word_length(difficulty))
+    difficulty = get_difficulty()
+    word_list = get_init_list(get_word_length(difficulty))
     word = random.choice(word_list)
     guessed = [False for letter in word]
     letters = ""
@@ -78,13 +79,13 @@ def game(lives=8):
     os.system("clear")
     while True:
         print("\nThe current word is...\n")
-        print(mw.display_text(word, guessed))
+        print(display_text(word, guessed))
         print("\nLives left: {}".format(lives))
-        letter = mw.handle_input(letters)
+        letter = handle_input(letters)
         letters += letter + " "
         word_list = refine_list(word_list, letter)
         word = random.choice(word_list)
-        matched_indexes = mw.guess_checker(word, letter)
+        matched_indexes = guess_checker(word, letter)
         word_list = refine_list(word_list, word, letter)
         if matched_indexes:
             print("\nYes, {} is in the word!".format(letter))
@@ -93,13 +94,13 @@ def game(lives=8):
         else:
             print("\nSorry, {} is not in the word.".format(letter))
             lives -= 1
-        result = mw.win_or_lose(guessed, lives)
+        result = win_or_lose(guessed, lives)
         if result is None:
             continue
-        print(mw.final_message(result))
+        print(final_message(result))
         print("\nThe word was {}.\n".format(word))
         break
-    return mw.play_again()
+    return play_again()
 
 
 # Main program
