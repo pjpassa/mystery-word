@@ -1,4 +1,5 @@
-from mystery_word import display_text, handle_input, get_difficulty, play_again
+from mystery_word as mw import display_text, handle_input, get_difficulty, \
+    play_again, guess_checker
 from collections import defaultdict
 import random
 
@@ -51,23 +52,40 @@ def refine_list(word_list, letter):
     return [word for word in matching_words if letter == word[top_index]]
 
 
+# Correct list
+def correct_list(word_list, current_word, guessed):
+    new_list = []
+    for word in word_list:
+        for index, letter in enumerate(word):
+            keep = True
+            if guessed[index] and letter != word[index]:
+                keep = False
+        if keep:
+            new_list.append(word)
+    return new_list
+
+
 # The game!
 def game(lives=8):
-    difficulty = get_difficulty()
-    word_length = get_word_length(difficulty)
-    guessed = [False for letter in range(word_length)]
+    difficulty = mw.get_difficulty()
+    word_list = get_init_list(mw.get_word_length(difficulty))
+    word = random.choice(word_list)
+    guessed = [False for letter in word]
     letters = ""
     print("Try to guess the mystery word!")
-    print("The word is {} letters long.".format(word_length))
+    print("The word is {} letters long.".format(len(word)))
     input("Press Enter to cotinue.")
     os.system("clear")
     while True:
         print("\nThe current word is...\n")
-        print(display_text(word, guessed))
-        print("\nYou have {} lives left.".format(lives))
-        letter = handle_input(letters)
+        print(mw.display_text(word, guessed))
+        print("\nLives left: {}".format(lives))
+        letter = mw.handle_input(letters)
         letters += letter + " "
-        matched_indexes = guess_checker(word, letter)
+        word_list = refine_list(word_list, letter)
+        word = random.choice(word_list)
+        matched_indexes = mw.guess_checker(word, letter)
+        word_list = refine_list(word_list, word, letter)
         if matched_indexes:
             print("\nYes, {} is in the word!".format(letter))
             for index in matched_indexes:
@@ -75,10 +93,17 @@ def game(lives=8):
         else:
             print("\nSorry, {} is not in the word.".format(letter))
             lives -= 1
-        result = win_or_lose(guessed, lives)
+        result = mw.win_or_lose(guessed, lives)
         if result is None:
             continue
-        print(final_message(result))
+        print(mw.final_message(result))
         print("\nThe word was {}.\n".format(word))
         break
-    return play_again()
+    return mw.play_again()
+
+
+# Main program
+if __name__ == "__main__":
+    while game():
+        continue
+    print("\nThanks for playing!\n")
