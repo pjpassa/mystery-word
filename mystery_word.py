@@ -44,7 +44,7 @@ def pick_word(difficulty):
     return word
 
 
-# Display current state.
+# Gets the current state of the game..
 def display_text(word, guessed):
     string = ""
     for index, bool in enumerate(guessed):
@@ -55,7 +55,7 @@ def display_text(word, guessed):
     return string
 
 
-# Handle input from user.
+# Gets the user's next guess. Ensures the guess is valid.
 def handle_input(letters):
     character = ''
     while True:

@@ -41,7 +41,7 @@ def top_items(dictionary, number):
     return pair_list[:number]
 
 
-# Refine new list with guess
+# Returns a list that contains the most words based on index of the letter.
 def refine_list(word_list, letter):
     matching_words = [word for word in word_list if letter in word]
     non_matching_words = [word for word in word_list if letter not in word]
@@ -53,7 +53,7 @@ def refine_list(word_list, letter):
     return [word for word in matching_words if letter == word[top_index]]
 
 
-# Correct list
+# Ensures that the words in the list match the current display.
 def correct_list(word_list, current_word, guessed, letters):
     new_list = []
     for word in word_list:
